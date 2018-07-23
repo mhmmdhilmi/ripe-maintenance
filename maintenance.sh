@@ -14,7 +14,7 @@ fi
 
 #remove temporary file
 mkdir -p /tmp/modem_check 
-rm -f /tmp/modem_check/{id_list,provider_list,ifname_list,result_list,tmp_list,result_list}.txt
+rm -f /tmp/modem_check/{id_list,provider_list,ifname_list,check_list,result_list,tmp_list,result_list}.txt
 
 #check from detected modem
 for _id in `$mmcli -L | awk '{print $1}' | sed 1,2d`; do
@@ -39,7 +39,9 @@ else
 	for i in `seq 1 $detected_modem`; do
 		check=`$nmcli c s | grep gsm | awk {'print $1'} | sed -n "$i"p`
 		if [[ -z `$cat /tmp/modem_check/result_list.txt | awk {'print $2'} | grep "$check"` ]]; then
-			echo "$check disconnected" 
+			echo "$check disconnected"
+			echo "$check" >> /tmp/modem_check/check_list.txt 
 		fi
 	done
 fi
+
