@@ -18,13 +18,13 @@ redial(){
 	done
 
 	sleep 60
-}
 
-#redial modem
-for i in `seq 1 $disconnect_modem`; do
-	provider=`cat /tmp/modem_check/check_list.txt | sed -n "$i"p`
-	$nmcli c u $provider
-done
+	#redial modem
+	for i in `seq 1 $disconnect_modem`; do
+		provider=`cat /tmp/modem_check/check_list.txt | sed -n "$i"p`
+		$nmcli c u $provider
+	done
+}
 
 if mmcli -L | grep 'No modems were found' > /dev/null 2>&1; then
         echo "Modems not found"
