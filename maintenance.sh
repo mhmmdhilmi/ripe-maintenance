@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 mmcli=`which mmcli`
 nmcli=`which nmcli`
@@ -45,7 +45,7 @@ paste -d' ' /tmp/modem_check/provider_list.txt /tmp/modem_check/gateway_list.txt
 if [ "$connected_modem" == "$detected_modem" ]; then
 	echo "all of $connected_modem modem(s) connected" >> /tmp/modem_check/message.txt 
 else
-	echo "$connected_modem of $detected_modem modem(s) disconnected" >> /tmp/modem_check/message.txt 
+	echo "$(($detected_modem - $connected_modem)) of $detected_modem modem(s) disconnected" >> /tmp/modem_check/message.txt 
 	for i in `seq 1 $detected_modem`; do
 		if [[ -z `$cat /tmp/modem_check/result_list.txt | sed -n "$i"p | awk {'print $2'}` ]]; then
 			check=`$cat /tmp/modem_check/result_list.txt | sed -n "$i"p | awk {'print $1'}`
@@ -56,6 +56,7 @@ else
 	redial
 fi
 
+#Send message to telegram API
 msg=`$cat /tmp/modem_check/message.txt`
 
 while IFS= read line
