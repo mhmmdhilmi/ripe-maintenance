@@ -20,6 +20,15 @@ redial(){
 	done
 }
 
+telegram(){
+	#Send message to telegram API (change your chatid and token)
+	msg=`$cat /tmp/modem_check/message.txt`
+	token="697263182:AAEljlmqD5wGKO1q6eSb6_Sn710gIOWey0s"
+	chatid="-272438846"
+	curl -s -F chat_id="$chatid" -F text="$msg" https://api.telegram.org/bot$token/sendMessage > /dev/null
+}
+
+
 if mmcli -L | grep 'No modems were found' > /dev/null 2>&1; then
         echo "Modems not found"
         exit
@@ -29,7 +38,7 @@ fi
 mkdir -p /tmp/modem_check 
 rm -f /tmp/modem_check/{provider_list,gateway_list,check_list,result_list,message}.txt
 
-#check from detected modem
+#Getting params from detected modem
 for _id in `$mmcli -L | awk '{print $1}' | sed 1,2d`; do
 	modem_id=`basename "$_id"`
 	provider=`$mmcli -m $modem_id | grep "operator name" | awk '{print $4$5}' | cut -d "'" -f2`
@@ -41,7 +50,7 @@ done
 
 paste -d' ' /tmp/modem_check/provider_list.txt /tmp/modem_check/gateway_list.txt >> /tmp/modem_check/result_list.txt
 
-#detected vs connected
+#Connectivity status update
 if [ "$connected_modem" == "$detected_modem" ]; then
 	echo "all of $connected_modem modem(s) connected" >> /tmp/modem_check/message.txt 
 else
@@ -56,9 +65,4 @@ else
 	redial
 fi
 
-#Send message to telegram API (change your chatid and token)
-msg=`$cat /tmp/modem_check/message.txt`
-token="697263182:AAEljlmqD5wGKO1q6eSb6_Sn710gIOWey0s"
-chatid="-272438846"
-curl -s -F chat_id="$chatid" -F text="$msg" https://api.telegram.org/bot$token/sendMessage > /dev/null
-
+telegram
