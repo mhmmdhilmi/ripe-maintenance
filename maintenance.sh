@@ -56,11 +56,8 @@ else
 	redial
 fi
 
-#Send message to telegram API
+#Send message to telegram API (change your chatid)
 msg=`$cat /tmp/modem_check/message.txt`
+token="697263182:AAEljlmqD5wGKO1q6eSb6_Sn710gIOWey0s"
+curl -s -F chat_id=-272438846 -F text="$msg" https://api.telegram.org/bot$token/sendMessage > /dev/null
 
-while IFS= read line
-do
-  token="697263182:AAEljlmqD5wGKO1q6eSb6_Sn710gIOWey0s"
-  curl -s -F chat_id=$line -F text="$msg" https://api.telegram.org/bot$token/sendMessage > /dev/null
-done < /home/hilmi/bot/chatid.txt
