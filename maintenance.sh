@@ -1,3 +1,4 @@
+
 #!/bin/bash 
 
 mmcli=`which mmcli`
